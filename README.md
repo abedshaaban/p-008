@@ -13,6 +13,7 @@ Handles:
 
 Handles:
 
+- clone
 - workspaces
 - checkpoints
 - operations
