@@ -15,7 +15,7 @@ export function branchToFolderSlug(branch: string): string {
 
 export function resolveSlugCollision(
   desiredSlug: string,
-  existingSlugs: Set<string>,
+  existingSlugs: Set<string>
 ): string {
   if (!existingSlugs.has(desiredSlug)) return desiredSlug;
 
@@ -28,4 +28,3 @@ export function resolveSlugCollision(
 
   throw new Error("slug collision could not be resolved");
 }
-

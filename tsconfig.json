@@ -11,6 +11,9 @@
     "target": "esnext",
     "types": ["node"],
 
+    // Module resolution to support packages like @tanstack/publish-config
+    "moduleResolution": "node",
+
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -33,6 +36,7 @@
     "skipLibCheck": true,
 
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-  }
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts"]
 }

@@ -1,6 +1,7 @@
 {
   "name": "gitmedaddy",
   "version": "0.0.1",
+  "type": "module",
   "description": "Thin Git integration layer for managing multi-branch worktrees",
   "main": "dist/cli/index.js",
   "files": [
@@ -14,7 +15,7 @@
     "build": "tsc",
     "start": "node dist/cli/index.js",
     "dev": "ts-node src/cli/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cipublish": "node publish.ts"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,8 @@
     "commander": "^14.0.3"
   },
   "devDependencies": {
+    "@tanstack/eslint-config": "^0.4.0",
+    "@tanstack/publish-config": "^0.2.2",
     "@types/node": "^25.3.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
