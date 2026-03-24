@@ -225,6 +225,10 @@ This command pushes with upstream (`git push -u origin <branch>`) before opening
 - Run commands from inside a `gmd` project/workspace for non-`clone` operations.
 - Command output is JSON for script-friendly automation.
 
+## Roadmap
+
+1. Better integration for AI info streaming.
+
 ## Under the Hood
 
 `gmd` is built on Git branches + Git worktrees.
