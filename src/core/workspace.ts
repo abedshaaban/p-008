@@ -19,6 +19,8 @@ import {
 export interface CreateNewWorkspaceInput {
   branchName: string;
   baseBranchOverride?: string | undefined;
+  folderName?: string | undefined;
+  goal?: string | undefined;
   cwd: string;
 }
 
@@ -32,6 +34,7 @@ export interface CreateNewWorkspaceResult {
 
 export interface ShowWorkspaceInput {
   branchName: string;
+  folderName?: string | undefined;
   cwd: string;
 }
 
@@ -66,7 +69,7 @@ export interface HideWorkspaceResult {
 export async function createNewWorkspace(
   input: CreateNewWorkspaceInput,
 ): Promise<CreateNewWorkspaceResult> {
-  const { branchName, baseBranchOverride, cwd } = input;
+  const { branchName, baseBranchOverride, folderName, goal, cwd } = input;
 
   const projectRoot = findProjectRoot(cwd);
   if (!projectRoot) {
@@ -83,20 +86,16 @@ export async function createNewWorkspace(
   await ensureBaseBranchExists(gitDir, baseBranch);
   const usedExistingRemoteBranch = await remoteBranchExists(gitDir, branchName);
 
-  const desiredSlug = branchToFolderSlug(branchName);
-  const existingSlugs = new Set(state.workspaces.map((w) => w.folder));
-  const folderSlug = resolveSlugCollision(desiredSlug, existingSlugs);
-
-  if (existingSlugs.has(folderSlug)) {
-    throw new Error("workspace folder already exists");
-  }
+  const desiredFolderName = folderName ? branchToFolderSlug(folderName) : branchToFolderSlug(branchName);
+  const existingFolderNames = new Set(state.workspaces.map((w) => w.folderName));
+  const resolvedFolderName = resolveSlugCollision(desiredFolderName, existingFolderNames);
 
   const existingBranch = state.workspaces.find((w) => w.branch === branchName);
   if (existingBranch) {
     throw new Error("branch already exists in a conflicting way");
   }
 
-  const workspaceDir = path.join(projectRoot, folderSlug);
+  const workspaceDir = path.join(projectRoot, resolvedFolderName);
   try {
     await fs.mkdir(workspaceDir, { recursive: false });
   } catch (error) {
@@ -111,10 +110,8 @@ export async function createNewWorkspace(
 
   const newEntry = {
     branch: branchName,
-    folder: folderSlug,
-    path: folderSlug,
-    baseBranch,
-    createdAt: new Date().toISOString(),
+    folderName: resolvedFolderName,
+    goal: (goal ?? "").trim(),
   };
 
   const newState: ProjectState = {
@@ -134,7 +131,7 @@ export async function createNewWorkspace(
 }
 
 export async function showWorkspace(input: ShowWorkspaceInput): Promise<ShowWorkspaceResult> {
-  const { branchName, cwd } = input;
+  const { branchName, folderName, cwd } = input;
 
   const projectRoot = findProjectRoot(cwd);
   if (!projectRoot) {
@@ -160,10 +157,10 @@ export async function showWorkspace(input: ShowWorkspaceInput): Promise<ShowWork
     await syncLocalBranchToRemote(gitDir, branchName);
   }
 
-  const desiredSlug = branchToFolderSlug(branchName);
-  const existingSlugs = new Set(state.workspaces.map((w) => w.folder));
-  const folderSlug = resolveSlugCollision(desiredSlug, existingSlugs);
-  const workspaceDir = path.join(projectRoot, folderSlug);
+  const desiredFolderName = folderName ? branchToFolderSlug(folderName) : branchToFolderSlug(branchName);
+  const existingFolderNames = new Set(state.workspaces.map((w) => w.folderName));
+  const resolvedFolderName = resolveSlugCollision(desiredFolderName, existingFolderNames);
+  const workspaceDir = path.join(projectRoot, resolvedFolderName);
 
   try {
     await fs.mkdir(workspaceDir, { recursive: false });
@@ -178,10 +175,8 @@ export async function showWorkspace(input: ShowWorkspaceInput): Promise<ShowWork
 
   const newEntry = {
     branch: branchName,
-    folder: folderSlug,
-    path: folderSlug,
-    baseBranch: state.defaultBaseBranch,
-    createdAt: new Date().toISOString(),
+    folderName: resolvedFolderName,
+    goal: "",
   };
 
   const newState: ProjectState = {
@@ -213,7 +208,7 @@ export async function hideWorkspace(input: HideWorkspaceInput): Promise<HideWork
   }
 
   const gitDir = path.join(projectRoot, ".gmd", "repo.git");
-  const workspaceDir = path.join(projectRoot, entry.path);
+  const workspaceDir = path.join(projectRoot, entry.folderName);
   await removeWorktree(gitDir, workspaceDir);
 
   const newState: ProjectState = {

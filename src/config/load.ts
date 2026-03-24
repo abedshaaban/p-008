@@ -2,6 +2,19 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { ProjectConfig, ProjectState } from "./types";
 
+function normalizeWorkspaces(parsed: Partial<ProjectState>): ProjectState["workspaces"] {
+  const rawEntries = Array.isArray(parsed.workspaces) ? parsed.workspaces : [];
+
+  return rawEntries.map((entry) => {
+    const record = entry as unknown as Record<string, unknown>;
+    return {
+      branch: String(record.branch ?? ""),
+      folderName: String(record.folderName ?? record.folder ?? record.path ?? ""),
+      goal: String(record.goal ?? ""),
+    };
+  });
+}
+
 export async function loadConfig(projectRoot: string): Promise<ProjectConfig> {
   const configPath = path.join(projectRoot, ".gmd", "config.json");
   const raw = await fs.readFile(configPath, "utf8");
@@ -17,7 +30,7 @@ export async function loadState(projectRoot: string): Promise<ProjectState> {
     const parsed = JSON.parse(raw) as Partial<ProjectState>;
     return {
       defaultBaseBranch: parsed.defaultBaseBranch ?? "main",
-      workspaces: parsed.workspaces ?? [],
+      workspaces: normalizeWorkspaces(parsed),
     };
   } catch (error) {
     const err = error as NodeJS.ErrnoException;
@@ -33,6 +46,6 @@ export async function loadState(projectRoot: string): Promise<ProjectState> {
   const config = await loadConfig(projectRoot);
   return {
     defaultBaseBranch: legacyParsed.defaultBaseBranch ?? config.defaultBaseBranch,
-    workspaces: legacyParsed.workspaces ?? [],
+    workspaces: normalizeWorkspaces(legacyParsed),
   };
 }

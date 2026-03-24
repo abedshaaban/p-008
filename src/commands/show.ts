@@ -1,5 +1,7 @@
 import type { Command } from "commander";
 import { showWorkspace } from "../core/workspace";
+import { branchToFolderSlug } from "../utils/slug";
+import { promptInput } from "../utils/prompt";
 
 export function registerShowCommand(program: Command) {
   program
@@ -9,8 +11,12 @@ export function registerShowCommand(program: Command) {
     .description("Display an existing branch as a workspace folder")
     .action(async (branchName: string) => {
       try {
+        const defaultFolderName = branchToFolderSlug(branchName);
+        const folderName = await promptInput("Workspace folder name", defaultFolderName);
+
         const result = await showWorkspace({
           branchName,
+          folderName,
           cwd: process.cwd(),
         });
 

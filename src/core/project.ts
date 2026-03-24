@@ -1,8 +1,16 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { initBareRepo, detectDefaultBranch, ensureLocalBranch, createWorktree } from "../git/repo";
+import {
+  initBareRepo,
+  detectDefaultBranch,
+  ensureLocalBranch,
+  createWorktree,
+  fetchLatest,
+  listRemoteBranches,
+} from "../git/repo";
 import { saveConfig, saveState } from "../config/save";
 import type { ProjectConfig, ProjectState } from "../config/types";
+import { promptSelect } from "../utils/prompt";
 
 export interface CloneProjectInput {
   repoUrl: string;
@@ -53,7 +61,18 @@ export async function cloneProject(input: CloneProjectInput): Promise<CloneProje
 
   const gitDir = await initBareRepo(projectRoot, repoUrl);
 
-  const defaultBranch = await detectDefaultBranch(gitDir);
+  const detectedDefaultBranch = await detectDefaultBranch(gitDir);
+  await fetchLatest(gitDir);
+  const remoteBranches = await listRemoteBranches(gitDir);
+
+  const preferredDefault = remoteBranches.includes("main")
+    ? "main"
+    : (remoteBranches.includes(detectedDefaultBranch) ? detectedDefaultBranch : remoteBranches[0]!);
+  const defaultBranch = await promptSelect(
+    "Select your default base branch for new workspaces",
+    remoteBranches,
+    preferredDefault,
+  );
 
   await ensureLocalBranch(gitDir, defaultBranch, defaultBranch, true);
 
@@ -74,10 +93,8 @@ export async function cloneProject(input: CloneProjectInput): Promise<CloneProje
     workspaces: [
       {
         branch: defaultBranch,
-        folder: defaultBranch,
-        path: defaultBranch,
-        baseBranch: defaultBranch,
-        createdAt: new Date().toISOString(),
+        folderName: defaultBranch,
+        goal: "Initial default workspace",
       },
     ],
   };

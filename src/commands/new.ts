@@ -1,5 +1,7 @@
 import type { Command } from "commander";
 import { createNewWorkspace } from "../core/workspace";
+import { branchToFolderSlug } from "../utils/slug";
+import { promptInput } from "../utils/prompt";
 
 export function registerNewCommand(program: Command) {
   program
@@ -10,9 +12,15 @@ export function registerNewCommand(program: Command) {
     .description("Create a new workspace for a branch")
     .action(async (branchName: string, options: { from?: string | undefined }) => {
       try {
+        const defaultFolderName = branchToFolderSlug(branchName);
+        const folderName = await promptInput("Workspace folder name", defaultFolderName);
+        const goal = await promptInput("Goal (optional)", "");
+
         const result = await createNewWorkspace({
           branchName,
           baseBranchOverride: options.from,
+          folderName,
+          goal,
           cwd: process.cwd(),
         });
 

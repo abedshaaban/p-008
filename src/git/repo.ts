@@ -57,6 +57,21 @@ export async function detectDefaultBranch(gitDir: string): Promise<string> {
   throw new Error("remote default branch could not be resolved");
 }
 
+export async function listRemoteBranches(gitDir: string): Promise<string[]> {
+  const { stdout } = await git(["for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"], {
+    gitDir,
+  });
+
+  const branches = stdout
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => line !== "origin/HEAD")
+    .map((line) => line.replace(/^origin\//, ""));
+
+  return Array.from(new Set(branches));
+}
+
 export async function fetchLatest(gitDir: string): Promise<void> {
   await git(["fetch", "origin"], { gitDir });
 }

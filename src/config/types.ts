@@ -7,10 +7,8 @@ export interface ProjectConfig {
 
 export interface WorkspaceEntry {
   branch: string;
-  folder: string;
-  path: string;
-  baseBranch: string;
-  createdAt: string;
+  folderName: string;
+  goal: string;
 }
 
 export interface ProjectState {
