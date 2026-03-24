@@ -11,6 +11,7 @@ import {
   ensureLocalBranch,
   fetchLatest,
   listRemoteBranches,
+  isPrimaryWorktree,
   localBranchExists,
   remoteBranchExists,
   removeWorktree,
@@ -324,6 +325,11 @@ export async function hideWorkspace(input: HideWorkspaceInput): Promise<HideWork
 
   const gitDir = await resolveGitCommonDirFromState(projectRoot, state)
   const workspaceDir = path.join(projectRoot, entry.folderName)
+  if (await isPrimaryWorktree(gitDir, workspaceDir)) {
+    throw new Error(
+      'cannot hide the primary Git workspace (the checkout created by clone); remove extra branches only, or delete the project folder if you want to discard the repo'
+    )
+  }
   await removeWorktree(gitDir, workspaceDir)
 
   const newState: ProjectState = {
@@ -369,6 +375,11 @@ export async function cleanWorkspaces(input: CleanWorkspacesInput): Promise<Clea
       throw new Error('cannot remove the repository root workspace; choose a different branch to keep')
     }
     const workspaceDir = path.join(projectRoot, workspace.folderName)
+    if (await isPrimaryWorktree(gitDir, workspaceDir)) {
+      throw new Error(
+        'cannot remove the primary Git workspace; choose a different branch to keep that is checked out in a linked worktree, or delete the project manually'
+      )
+    }
     await removeWorktree(gitDir, workspaceDir)
     removedBranches.push(workspace.branch)
   }

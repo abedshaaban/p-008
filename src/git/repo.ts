@@ -258,6 +258,25 @@ export async function createWorktree(gitDir: string, worktreePath: string, branc
   await git(['worktree', 'add', worktreePath, branch], { gitDir })
 }
 
+/** Git lists the primary (non-removable) worktree first in porcelain output. */
+export async function getMainWorktreePath(gitDir: string): Promise<string | null> {
+  const { stdout } = await git(['worktree', 'list', '--porcelain'], { gitDir })
+  for (const line of stdout.split('\n')) {
+    if (line.startsWith('worktree ')) {
+      return line.slice('worktree '.length)
+    }
+  }
+  return null
+}
+
+export async function isPrimaryWorktree(gitDir: string, worktreePath: string): Promise<boolean> {
+  const main = await getMainWorktreePath(gitDir)
+  if (!main) {
+    return false
+  }
+  return path.resolve(worktreePath) === path.resolve(main)
+}
+
 export async function removeWorktree(gitDir: string, worktreePath: string): Promise<void> {
   await git(['worktree', 'remove', worktreePath], { gitDir })
 }
