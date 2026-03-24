@@ -16,7 +16,7 @@ import { registerShowGoalCommand } from '../commands/showgoal'
 export function createCli() {
   const program = new Command()
 
-  program.name('gitmedaddy').description('Thin Git integration layer').version('0.0.4')
+  program.name('gitmedaddy').description('Thin Git integration layer').version('0.0.5')
 
   registerCloneCommand(program)
   registerFoundADaddyCommand(program)

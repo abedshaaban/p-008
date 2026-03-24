@@ -19,7 +19,14 @@ export class GitCommandError extends Error {
     public readonly code: number | null,
     public readonly stderr: string
   ) {
-    super(message)
+    const cmdLine = `git ${command.join(' ')}`
+    const stderrTrim = stderr.trim()
+    const parts = [message, cmdLine]
+    if (stderrTrim) {
+      parts.push(stderrTrim)
+    }
+    super(parts.join('\n'))
+    this.name = 'GitCommandError'
   }
 }
 
