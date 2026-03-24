@@ -535,7 +535,9 @@ export async function updateDefaultBaseBranch(
 
   const state = await loadState(projectRoot)
   const gitDir = await resolveGitCommonDirFromState(projectRoot, state)
-  await fetchLatest(gitDir)
+
+  console.error('Fetching latest branches from origin...')
+  await fetchLatest(gitDir, { inheritStdio: true })
 
   const remoteBranches = await listRemoteBranches(gitDir)
   if (remoteBranches.length === 0) {

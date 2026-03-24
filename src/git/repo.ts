@@ -30,7 +30,10 @@ export async function listRemoteBranchesFromUrl(repoUrl: string): Promise<Array<
     const parts = trimmed.split('\t')
     const ref = parts[1]
     if (ref?.startsWith('refs/heads/')) {
-      branches.push(ref.slice('refs/heads/'.length))
+      const name = ref.slice('refs/heads/'.length)
+      if (name !== 'origin') {
+        branches.push(name)
+      }
     }
   }
   return Array.from(new Set(branches))
@@ -106,12 +109,16 @@ export async function listRemoteBranches(gitDir: string): Promise<Array<string>>
     .filter(Boolean)
     .filter((line) => line !== 'origin/HEAD')
     .map((line) => line.replace(/^origin\//, ''))
+    .filter((name) => name !== 'origin')
 
   return Array.from(new Set(branches))
 }
 
-export async function fetchLatest(gitDir: string): Promise<void> {
-  await git(['fetch', 'origin'], { gitDir })
+export async function fetchLatest(gitDir: string, options?: { inheritStdio?: boolean }): Promise<void> {
+  await git(['fetch', 'origin'], {
+    gitDir,
+    ...(options?.inheritStdio === true ? { inheritStdio: true } : {})
+  })
 }
 
 export async function ensureBaseBranchExists(gitDir: string, baseBranch: string): Promise<void> {
