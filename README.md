@@ -1,5 +1,7 @@
 # gitmedaddy (`gmd`)
 
+![Gmd (Git Me Daddy): thin Git wrapper that manages worktrees better—everything you can do with Gmd you can do with Git](assets/banner.png)
+
 `gitmedaddy` (short alias: `gmd`) is a Git worktree-based CLI for running branch workflows in parallel.
 It keeps Git as the source of truth while organizing each branch as its own local workspace folder.
 
