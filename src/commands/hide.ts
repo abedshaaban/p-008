@@ -45,7 +45,7 @@ export function registerHideCommand(program: Command) {
         }
 
         const result = await hideWorkspace({
-          branchName: branchName!,
+          branchName: branchName,
           cwd: process.cwd()
         })
 

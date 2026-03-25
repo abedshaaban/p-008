@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { withLoading } from '../utils/loading'
 import { GitCommandError, git } from './exec'
 import type { ProjectState } from '../config/types'
-import { withLoading } from '../utils/loading'
 
 export async function resolveGitCommonDir(cwd: string): Promise<string> {
   const { stdout } = await git(['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd })
