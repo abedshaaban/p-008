@@ -17,7 +17,7 @@ import { registerUpdateCommand } from '../commands/update'
 export function createCli() {
   const program = new Command()
 
-  program.name('gitmedaddy').description('Thin Git integration layer').version('0.0.12')
+  program.name('gitmedaddy').description('Thin Git integration layer').version('0.0.13')
   program.option('--json', 'Force JSON output for this command')
   program.option('--no-json', 'Force text output for this command')
   program.option('--interactive', 'Force interactive prompts for this command')
