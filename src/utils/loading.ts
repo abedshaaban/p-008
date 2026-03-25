@@ -30,4 +30,3 @@ export async function withLoading<T>(message: string, fn: () => Promise<T>): Pro
     process.stdout.write(`\r${message} done\n`)
   }
 }
-
