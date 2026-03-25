@@ -58,6 +58,7 @@ export interface HideWorkspaceResult {
   projectRoot: string
   workspacePath: string
   branch: string
+  hidden: boolean
 }
 
 export interface CleanWorkspacesInput {
@@ -334,16 +335,16 @@ export async function hideWorkspace(input: HideWorkspaceInput): Promise<HideWork
     if (!entry) {
       throw new Error('branch is not currently displayed')
     }
-    if (entry.folderName === '.') {
-      throw new Error('cannot hide the repository root workspace')
-    }
 
     const gitDir = await resolveGitCommonDirFromState(projectRoot, state)
     const workspaceDir = path.join(projectRoot, entry.folderName)
-    if (await isPrimaryWorktree(gitDir, workspaceDir)) {
-      throw new Error(
-        'cannot hide the primary Git workspace (the checkout created by clone); remove extra branches only, or delete the project folder if you want to discard the repo'
-      )
+    if (entry.folderName === '.' || (await isPrimaryWorktree(gitDir, workspaceDir))) {
+      return {
+        projectRoot,
+        workspacePath: workspaceDir,
+        branch: branchName,
+        hidden: false
+      }
     }
     await removeWorktree(gitDir, workspaceDir)
 
@@ -357,7 +358,8 @@ export async function hideWorkspace(input: HideWorkspaceInput): Promise<HideWork
     return {
       projectRoot,
       workspacePath: workspaceDir,
-      branch: branchName
+      branch: branchName,
+      hidden: true
     }
   })
 }
