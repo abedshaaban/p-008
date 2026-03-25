@@ -67,7 +67,6 @@ export async function foundADaddy(input: FoundADaddyInput): Promise<FoundADaddyR
 
   const commonDir = await resolveGitCommonDir(cwd)
 
-  console.error('Fetching latest branches from origin...')
   await fetchLatest(commonDir, { inheritStdio: true })
 
   const detectedDefaultBranch = await detectDefaultBranch(commonDir)

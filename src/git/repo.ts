@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { GitCommandError, git } from './exec'
 import type { ProjectState } from '../config/types'
+import { withLoading } from '../utils/loading'
 
 export async function resolveGitCommonDir(cwd: string): Promise<string> {
   const { stdout } = await git(['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd })
@@ -126,11 +127,30 @@ export async function listLocalBranches(gitDir: string): Promise<Array<string>> 
   return Array.from(new Set(branches))
 }
 
-export async function fetchLatest(gitDir: string, options?: { inheritStdio?: boolean }): Promise<void> {
-  await git(['fetch', 'origin'], {
-    gitDir,
-    ...(options?.inheritStdio === true ? { inheritStdio: true } : {})
-  })
+const lastFetchAtByGitDir = new Map<string, number>()
+
+export async function fetchLatest(
+  gitDir: string,
+  options?: { inheritStdio?: boolean; loadingMessage?: string }
+): Promise<void> {
+  const inheritStdio = options?.inheritStdio === true
+  const loadingMessage = options?.loadingMessage ?? 'Fetching latest branches from origin...'
+
+  // Avoid duplicate fetches within the same CLI command flow.
+  const lastAt = lastFetchAtByGitDir.get(gitDir)
+  const skipIfFreshWithinMs = inheritStdio ? 0 : 10_000
+  if (!inheritStdio && lastAt && Date.now() - lastAt < skipIfFreshWithinMs) {
+    return
+  }
+
+  const runFetch = () =>
+    git(['fetch', 'origin'], {
+      gitDir,
+      ...(inheritStdio ? { inheritStdio: true } : {})
+    })
+
+  await withLoading(loadingMessage, runFetch)
+  lastFetchAtByGitDir.set(gitDir, Date.now())
 }
 
 export async function ensureBaseBranchExists(gitDir: string, baseBranch: string): Promise<void> {
