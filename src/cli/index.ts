@@ -17,7 +17,7 @@ import { registerUpdateCommand } from '../commands/update'
 export function createCli() {
   const program = new Command()
 
-  program.name('gitmedaddy').description('Thin Git integration layer').version('0.0.10')
+  program.name('gitmedaddy').description('Thin Git integration layer').version('0.0.11')
 
   registerCloneCommand(program)
   registerFoundADaddyCommand(program)

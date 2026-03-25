@@ -114,6 +114,18 @@ export async function listRemoteBranches(gitDir: string): Promise<Array<string>>
   return Array.from(new Set(branches))
 }
 
+export async function listLocalBranches(gitDir: string): Promise<Array<string>> {
+  const { stdout } = await git(['for-each-ref', '--format=%(refname:short)', 'refs/heads'], { gitDir })
+
+  const branches = stdout
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((name) => name !== 'origin' && !name.startsWith('origin/'))
+
+  return Array.from(new Set(branches))
+}
+
 export async function fetchLatest(gitDir: string, options?: { inheritStdio?: boolean }): Promise<void> {
   await git(['fetch', 'origin'], {
     gitDir,

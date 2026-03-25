@@ -1,6 +1,6 @@
 {
   "name": "gitmedaddy",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "packageManager": "pnpm@10.18.2",
   "description": "Thin Git integration layer for managing multi-branch worktrees",
   "main": "dist/cli/index.js",
