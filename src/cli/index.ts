@@ -2,6 +2,7 @@
 
 import { Command } from 'commander'
 import { registerCleanCommand } from '../commands/clean'
+import { registerCheatOnDaddyCommand } from '../commands/cheatondaddy'
 import { registerCloneCommand } from '../commands/clone'
 import { registerFoundADaddyCommand } from '../commands/foundadaddy'
 import { registerHideCommand } from '../commands/hide'
@@ -20,6 +21,7 @@ export function createCli() {
 
   registerCloneCommand(program)
   registerFoundADaddyCommand(program)
+  registerCheatOnDaddyCommand(program)
   registerNewCommand(program)
   registerShowCommand(program)
   registerSetGoalCommand(program)

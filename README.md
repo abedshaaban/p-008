@@ -125,6 +125,26 @@ gmd new <branch-name> --from <base-branch>
 
 Create a new branch workspace. By default, `--from` uses the configured base branch.
 
+### foundadaddy
+
+```bash
+gmd foundadaddy
+```
+
+Initialize `gmd` in an existing Git repository and create the first workspace from your selected default base branch.
+
+### cheatondaddy
+
+```bash
+gmd cheatondaddy
+```
+
+Reverse `gmd` setup for the current project:
+
+- removes all tracked workspace folders
+- restores the repository root as the main working tree on your default base branch
+- removes `state/` and `.gmd/` metadata so the project behaves like a normal Git repo again
+
 ## Under the Hood
 
 `gmd` is built on top of Git worktrees and Git branches.
