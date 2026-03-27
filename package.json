@@ -12,7 +12,8 @@
     "gmd": "dist/cli/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
     "start": "node dist/cli/index.js",
     "dev": "ts-node src/cli/index.ts",
@@ -20,7 +21,7 @@
     "test:watch": "vitest",
     "cipublish": "node publish.mjs",
     "lint": "eslint .",
-    "verify": "pnpm run format:check && pnpm run lint && pnpm run test",
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test",
     "check": "pnpm run build && pnpm run verify",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -53,6 +54,7 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.2"
   }
