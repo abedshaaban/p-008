@@ -64,7 +64,9 @@ describe('show, hide, and clean command actions', () => {
     vi.mocked(promptInput).mockReset()
     vi.mocked(promptSelect).mockReset()
 
-    vi.mocked(executeCommand).mockImplementation(async (_command, run) => run(behavior))
+    vi.mocked(executeCommand).mockImplementation(async (_command, run) => {
+      await run(behavior)
+    })
   })
 
   it('show uses the explicit branch name and prints remote usage info', async () => {

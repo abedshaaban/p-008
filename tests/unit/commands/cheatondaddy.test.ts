@@ -16,7 +16,9 @@ describe('cheatondaddy command', () => {
   beforeEach(() => {
     vi.mocked(executeCommand).mockReset()
     vi.mocked(cheatOnDaddy).mockReset()
-    vi.mocked(executeCommand).mockImplementation(async (_command, run) => run({ json: true, interactive: false }))
+    vi.mocked(executeCommand).mockImplementation(async (_command, run) => {
+      await run({ json: true, interactive: false })
+    })
   })
 
   it('routes through executeCommand and forwards cwd', async () => {

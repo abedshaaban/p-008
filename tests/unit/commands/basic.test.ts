@@ -53,12 +53,18 @@ describe('basic command actions', () => {
     vi.mocked(promptInput).mockReset()
     vi.mocked(getGlobalCliOptions).mockReset()
 
-    vi.mocked(executeCommand).mockImplementation(async (_command, run) => run(behavior))
+    vi.mocked(executeCommand).mockImplementation(async (_command, run) => {
+      await run(behavior)
+    })
     vi.mocked(getGlobalCliOptions).mockReturnValue({})
   })
 
   it('foundadaddy passes cwd and behavior settings through executeCommand', async () => {
-    vi.mocked(foundADaddy).mockResolvedValue({ ok: true })
+    vi.mocked(foundADaddy).mockResolvedValue({
+      projectRoot: '/tmp/project',
+      workspacePath: '/tmp/project/main',
+      defaultBaseBranch: 'main'
+    })
     const program = new Command()
     registerFoundADaddyCommand(program)
 
