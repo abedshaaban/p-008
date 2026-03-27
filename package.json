@@ -20,7 +20,8 @@
     "test:watch": "vitest",
     "cipublish": "node publish.mjs",
     "lint": "eslint .",
-    "check": "pnpm run build && pnpm run format:check && pnpm run lint",
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run test",
+    "check": "pnpm run build && pnpm run verify",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
