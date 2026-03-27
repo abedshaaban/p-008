@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { Command } from 'commander'
 import { registerCleanCommand } from '../commands/clean'
 import { registerCheatOnDaddyCommand } from '../commands/cheatondaddy'
