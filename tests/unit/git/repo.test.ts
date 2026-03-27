@@ -20,11 +20,9 @@ describe('git repo helpers', () => {
 
   it('parses remote branch names from ls-remote output', async () => {
     vi.mocked(git).mockResolvedValue({
-      stdout: [
-        'abc123\trefs/heads/main',
-        'def456\trefs/heads/feature/demo',
-        'def456\trefs/heads/feature/demo'
-      ].join('\n'),
+      stdout: ['abc123\trefs/heads/main', 'def456\trefs/heads/feature/demo', 'def456\trefs/heads/feature/demo'].join(
+        '\n'
+      ),
       stderr: ''
     })
 

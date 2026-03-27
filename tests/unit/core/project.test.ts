@@ -24,11 +24,7 @@ vi.mock('../../../src/utils/prompt', () => ({
 
 import { saveState } from '../../../src/config/save'
 import { git } from '../../../src/git/exec'
-import {
-  detectDefaultBranchFromRemoteUrl,
-  listRemoteBranchesFromUrl,
-  resolveGitCommonDir
-} from '../../../src/git/repo'
+import { detectDefaultBranchFromRemoteUrl, listRemoteBranchesFromUrl, resolveGitCommonDir } from '../../../src/git/repo'
 import { promptSelect } from '../../../src/utils/prompt'
 
 const tempDirs: Array<string> = []
@@ -70,7 +66,15 @@ describe('cloneProject', () => {
     })
     expect(git).toHaveBeenNthCalledWith(
       1,
-      ['clone', '--verbose', '--progress', '-b', 'main', 'https://github.com/example/demo.git', path.join(cwd, 'demo', 'main')],
+      [
+        'clone',
+        '--verbose',
+        '--progress',
+        '-b',
+        'main',
+        'https://github.com/example/demo.git',
+        path.join(cwd, 'demo', 'main')
+      ],
       { cwd: path.join(cwd, 'demo'), inheritStdio: true }
     )
     expect(git).toHaveBeenNthCalledWith(2, ['fetch', '--verbose', '--progress', 'origin'], {

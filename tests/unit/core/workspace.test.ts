@@ -94,7 +94,11 @@ describe('createNewWorkspace', () => {
     expect(fetchLatest).toHaveBeenCalledWith('/tmp/project/.git')
     expect(ensureBaseBranchExists).toHaveBeenCalledWith('/tmp/project/.git', 'main')
     expect(ensureLocalBranch).toHaveBeenCalledWith('/tmp/project/.git', 'feature/demo', 'main', true)
-    expect(createWorktree).toHaveBeenCalledWith('/tmp/project/.git', path.join(projectRoot, 'feature-demo-a'), 'feature/demo')
+    expect(createWorktree).toHaveBeenCalledWith(
+      '/tmp/project/.git',
+      path.join(projectRoot, 'feature-demo-a'),
+      'feature/demo'
+    )
     expect(saveState).toHaveBeenCalledWith(projectRoot, {
       defaultBaseBranch: 'main',
       settings: { json: true, interactive: false },
@@ -157,7 +161,11 @@ describe('createNewWorkspace', () => {
       cwd: projectRoot
     })
 
-    expect(createWorktree).toHaveBeenCalledWith('/tmp/project/.git', path.join(projectRoot, 'My-Folder'), 'feature/demo')
+    expect(createWorktree).toHaveBeenCalledWith(
+      '/tmp/project/.git',
+      path.join(projectRoot, 'My-Folder'),
+      'feature/demo'
+    )
     expect(result.workspacePath).toBe(path.join(projectRoot, 'My-Folder'))
     expect(saveState).toHaveBeenLastCalledWith(projectRoot, {
       defaultBaseBranch: 'main',

@@ -31,9 +31,7 @@ describe('global CLI options', () => {
     const program = createCli()
     const longFlags = program.options.map((option) => option.long)
 
-    expect(longFlags).toEqual(
-      expect.arrayContaining(['--json', '--no-json', '--interactive', '--no-interactive'])
-    )
+    expect(longFlags).toEqual(expect.arrayContaining(['--json', '--no-json', '--interactive', '--no-interactive']))
   })
 
   it('parses --json and --interactive as true global overrides', () => {

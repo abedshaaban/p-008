@@ -81,10 +81,7 @@ describe('withStateLock', () => {
 
     const existsError = Object.assign(new Error('exists'), { code: 'EEXIST' })
     const openSpy = vi.spyOn(fs, 'open').mockRejectedValue(existsError as never)
-    const nowSpy = vi
-      .spyOn(Date, 'now')
-      .mockReturnValueOnce(0)
-      .mockReturnValueOnce(10_001)
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValueOnce(0).mockReturnValueOnce(10_001)
 
     await expect(withStateLock(projectRoot, async () => 'never')).rejects.toThrow('timed out waiting for state lock')
 

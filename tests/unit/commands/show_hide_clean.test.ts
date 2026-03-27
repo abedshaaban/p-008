@@ -80,10 +80,7 @@ describe('show, hide, and clean command actions', () => {
       folderName: 'feature-demo',
       cwd: process.cwd()
     })
-    expect(printInfo).toHaveBeenCalledWith(
-      'Using remote branch "feature/demo" and displaying it locally.',
-      behavior
-    )
+    expect(printInfo).toHaveBeenCalledWith('Using remote branch "feature/demo" and displaying it locally.', behavior)
   })
 
   it('show supports interactive branch selection and custom folder names', async () => {
@@ -106,11 +103,7 @@ describe('show, hide, and clean command actions', () => {
     await program.parseAsync(['node', 'test', 'show'])
 
     expect(fetchLatest).toHaveBeenCalledWith('/tmp/project/.git')
-    expect(promptSelect).toHaveBeenCalledWith(
-      'Select the branch to display',
-      ['feature/demo', 'local-only'],
-      'main'
-    )
+    expect(promptSelect).toHaveBeenCalledWith('Select the branch to display', ['feature/demo', 'local-only'], 'main')
     expect(promptInput).toHaveBeenCalledWith('Workspace folder name', 'feature-demo')
     expect(showWorkspace).toHaveBeenCalledWith({
       branchName: 'feature/demo',
